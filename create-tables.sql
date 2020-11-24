@@ -5,7 +5,6 @@ create table if not exists users
 			primary key,
 	password text,
 	hash_iterations int default 5000 not null,
-	server_salt text,
-	client_salt text
+	server_salt text
 );
 
