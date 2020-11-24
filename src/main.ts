@@ -4,13 +4,11 @@ import {DbConnection} from "./database.js";
 
 const PORT = 8000
 
-// Login page
-app.post('/login', login)
-
 // Connect to db
 const db = new DbConnection()
-db.getDb().then(() => {
-    console.log("Connected to db")})
+
+// Login page
+app.post('/login', ((req, res) => login(req, res, db)))
 
 app.listen(PORT, () => {
     console.log(`Listening at http://localhost:${PORT}`)

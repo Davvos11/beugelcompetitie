@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 });
 
 // middleware function to check for logged-in users
-const sessionChecker = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const sessionChecker = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (req.session.username && req.cookies[SESSION_KEY_NAME]) {
         // If the user is logged in, continue
         next()
