@@ -45,4 +45,18 @@ export class DbConnection {
         }
         return this.db
     }
+
+    async addUser(username: string, password: string, iterations: number, serverSalt: string) {
+        const db = await this.getDb()
+        return db.run("INSERT INTO users VALUES (?, ?, ?, ?)",
+            username, password, iterations, serverSalt)
+    }
+
+    async getCredentials(username: string) {
+        const db = await this.getDb()
+        const query = db.get("SELECT password, hash_iterations, server_salt FROM users WHERE username = ?", username)
+
+        return query.then(r => {
+            return {password: r.password, iterations: r.hash_iterations, salt: r.server_salt}})
+    }
 }
