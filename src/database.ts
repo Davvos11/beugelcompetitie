@@ -13,6 +13,8 @@ const SQL_SCRIPT_LOCATION = path.join(path.dirname('..'), 'create-tables.sql')
 
 const readFile = util.promisify(fs.readFile);
 
+export type sortOptions = "time" | "timestamp" | "name"
+
 export class DbConnection {
     private db: Database | undefined;
     private dbLocation: string;
@@ -61,11 +63,13 @@ export class DbConnection {
             return {password: r.password, iterations: r.hash_iterations, salt: r.server_salt}})
     }
 
-    async getTimes(maxAmount?: number, names?: string[], fromTime?: number, toTime?: number) {
+    async getTimes(maxAmount?: number, names?: string[], fromTime?: number, toTime?: number,
+                   sortBy: sortOptions = "name", sortDescending = false) {
         const db = await this.getDb()
         let query = "SELECT * FROM leaderboard"
         const args = []
 
+        // Add filters
         if (names) {
             // Add condition to query to filter on names
             query = filterQuery(query, `name in (${names.map(() => '?')})`)
@@ -80,6 +84,11 @@ export class DbConnection {
             query = filterQuery(query, "timestamp <= ?")
             args.push(toTime)
         }
+
+        // Add sorting
+        query += ` ORDER BY ${sortBy} COLLATE NOCASE ${sortDescending ? 'DESC' : 'ASC'}`
+
+        // Add amount limit
         if (maxAmount && maxAmount >= 0) {
             query += " LIMIT ?"
             args.push(maxAmount)

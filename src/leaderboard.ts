@@ -1,11 +1,13 @@
 import express from "express";
-import {DbConnection} from "./database.js";
+import {DbConnection, sortOptions} from "./database.js";
 
 export async function getLeaderboard(req: express.Request, res: express.Response, db: DbConnection) {
     const maxAmount = (req.query.amount ? Number(req.query.amount) : undefined)
     const names = (req.query.names ? req.query.names.toString().split(',') : undefined)
     const fromTime = (req.query.from ? Number(req.query.from) : undefined)
     const toTime = (req.query.to ? Number(req.query.to) : undefined)
+    const sortBy = req.query.sort_by as sortOptions
+    const sortDesc = Boolean(req.query.sort_descending)
 
     // Validate provided variables
     if (maxAmount && (isNaN(maxAmount) || maxAmount < 0 || !Number.isInteger(maxAmount))) {
@@ -18,7 +20,7 @@ export async function getLeaderboard(req: express.Request, res: express.Response
 
     try {
         // Retrieve results and send
-        const results = await db.getTimes(maxAmount, names, fromTime, toTime)
+        const results = await db.getTimes(maxAmount, names, fromTime, toTime, sortBy, sortDesc)
         return res.send(results)
     } catch (e) {
         return res.status(500).send("Error retrieving the leaderboard")
