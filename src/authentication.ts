@@ -24,7 +24,7 @@ export async function login(req: express.Request, res: express.Response, db: DbC
     if (await authenticateUser(username, password, db)) {
         // If secret is correct, add session
         req.session.username = username
-        return res.send(204)
+        return res.sendStatus(204)
     } else {
         return res.status(401).send("Authentication failed")
     }
