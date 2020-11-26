@@ -1,16 +1,16 @@
 import React from "react";
+import {getLeaderboard} from "./api";
 
-export class Leaderboard extends React.Component<{}, {data: {name: string, timestamp: number, time: number}[]}> {
-    constructor(props: {} | Readonly<{}>) {
+type sortBy = "name"|"time"|"timestamp"
+
+export class Leaderboard extends React.Component<{sortBy: sortBy, descending: boolean},{data: {name: string, timestamp: number, time: number}[]}> {
+    constructor(props: { sortBy: sortBy; descending: boolean; } | Readonly<{ sortBy: sortBy; descending: boolean; }>) {
         super(props);
         this.state = {
-            data: [
-                {name: "aaa",timestamp: 1606416064847,time: 5.8},
-                {name: "test",timestamp: 1606414153475,time: 10.685},
-                {name: "Dovat",timestamp: 1606414137579,time: 10.986}
-            ]
+            data: []
         };
     }
+
 
     render() {
         return <table id="leaderboard" className="table">
@@ -30,6 +30,9 @@ export class Leaderboard extends React.Component<{}, {data: {name: string, times
     }
 
     componentDidMount() {
+        getLeaderboard(this.props.sortBy, this.props.descending).then(r => {
+            this.setState({data: r})
+        })
     }
 }
 

@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.8",
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
+    "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
@@ -45,5 +46,6 @@
   },
   "proxy": "http://localhost:8000",
   "devDependencies": {
+    "@types/node-fetch": "^2.5.7"
   }
 }

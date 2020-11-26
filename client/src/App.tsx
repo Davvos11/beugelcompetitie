@@ -11,7 +11,7 @@ function App() {
               <p className="lead">Leaderboard voor de beugelcompetitie van de <b>Lit</b>terkerkstraat</p>
               <Bootstrap.Tabs defaultActiveKey="leaderboard">
                   <Bootstrap.Tab eventKey="leaderboard" title="Leaderboard">
-                      <Leaderboard />
+                      <Leaderboard sortBy="time" descending={false}/>
                   </Bootstrap.Tab>
                   <Bootstrap.Tab eventKey="graph" title="Graph">
                       Graph
