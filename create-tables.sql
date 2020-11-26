@@ -8,3 +8,14 @@ create table if not exists users
 	server_salt text
 );
 
+create table if not exists leaderboard
+(
+    name text not null,
+    timestamp int not null,
+    time numeric not null,
+    decimals int default 3 not null,
+    constraint leaderboard_pk
+        primary key (name, timestamp)
+);
+
+
