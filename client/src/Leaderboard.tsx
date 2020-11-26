@@ -1,6 +1,4 @@
 import React from "react";
-import "tablesorter"
-import $ from 'jquery'
 
 export class Leaderboard extends React.Component<{}, {data: {name: string, timestamp: number, time: number}[]}> {
     constructor(props: {} | Readonly<{}>) {
@@ -15,7 +13,7 @@ export class Leaderboard extends React.Component<{}, {data: {name: string, times
     }
 
     render() {
-        return <table id="leaderboard" className="table tablesorter">
+        return <table id="leaderboard" className="table">
             <thead>
                 <tr>
                     <th>Naam</th>
@@ -32,9 +30,6 @@ export class Leaderboard extends React.Component<{}, {data: {name: string, times
     }
 
     componentDidMount() {
-        const elem = $('#leaderboard')
-        if (elem !== null)
-            elem.tablesorter()
     }
 }
 
@@ -47,7 +42,7 @@ class LeaderboardEntry extends React.Component<{name: string, timestamp: number,
         return <tr>
             <td>{this.props.name}</td>
             <td>{this.props.time}</td>
-            <td data-sort={this.props.timestamp}>{timestampToDate(this.props.timestamp)}</td>
+            <td>{timestampToDate(this.props.timestamp)}</td>
         </tr>;
     }
 }
