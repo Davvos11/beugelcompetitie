@@ -7,9 +7,7 @@ const USER_COOKIE = 'user_sid'
 export async function getLeaderboard(sortBy: "name"|"time"|"timestamp" = "time", descending = true) {
     const url = new URL(LEADERBOARD_URL, new URL(window.location.href).origin)
     // Define URL parameters
-    const params: any = {sort_by: sortBy}
-    if (descending)
-        params.sort_descending = true
+    const params: any = {sort_by: sortBy, sort_descending: descending}
     // Add parameters to URL
     Object.keys(params).forEach((key: any) => url.searchParams.append(key, params[key]))
 

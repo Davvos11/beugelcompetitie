@@ -64,9 +64,16 @@ export class DbConnection {
     }
 
     async getTimes(maxAmount?: number, names?: string[], fromTime?: number, toTime?: number,
-                   sortBy: sortOptions = "name", sortDescending = false) {
+                   sortBy: sortOptions = "name", sortDescending = false, onlyHighScore = true) {
         const db = await this.getDb()
-        let query = "SELECT name, min(time) AS time, timestamp, decimals FROM leaderboard GROUP BY name"
+
+        let query: string
+        if (onlyHighScore) {
+            query = "SELECT name, min(time) AS time, timestamp, decimals FROM leaderboard"
+        } else {
+            query = "SELECT name, time, timestamp, decimals FROM leaderboard"
+        }
+
         const args = []
 
         // Add filters
@@ -84,6 +91,9 @@ export class DbConnection {
             query = filterQuery(query, "timestamp <= ?")
             args.push(toTime)
         }
+
+        if (onlyHighScore)
+            query += " GROUP BY name"
 
         // Add sorting
         query += ` ORDER BY ${sortBy} COLLATE NOCASE ${sortDescending ? 'DESC' : 'ASC'}`

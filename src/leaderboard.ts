@@ -7,7 +7,8 @@ export async function getLeaderboard(req: express.Request, res: express.Response
     const fromTime = (req.query.from ? Number(req.query.from) : undefined)
     const toTime = (req.query.to ? Number(req.query.to) : undefined)
     const sortBy = req.query.sort_by as sortOptions
-    const sortDesc = Boolean(req.query.sort_descending)
+    const sortDesc = req.query.sort_descending !== 'false'
+    const onlyHighScore = req.query.only_highscore !== 'false'
 
     // Validate provided variables
     if (maxAmount && (isNaN(maxAmount) || maxAmount < 0 || !Number.isInteger(maxAmount))) {
@@ -20,7 +21,7 @@ export async function getLeaderboard(req: express.Request, res: express.Response
 
     try {
         // Retrieve results and send
-        const results = await db.getTimes(maxAmount, names, fromTime, toTime, sortBy, sortDesc)
+        const results = await db.getTimes(maxAmount, names, fromTime, toTime, sortBy, sortDesc, onlyHighScore)
         return res.send(results)
     } catch (e) {
         return res.status(500).send("Error retrieving the leaderboard")
