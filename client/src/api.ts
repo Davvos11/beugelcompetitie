@@ -19,3 +19,28 @@ export async function getLeaderboard(sortBy: "name"|"time"|"timestamp" = "time",
         return r.json()
     })
 }
+
+export async function addTime(name: string, time: number, timestamp?: number) {
+    const url = new URL(LEADERBOARD_URL, new URL(window.location.href).origin)
+    const body = {name, time, timestamp}
+
+    // TODO login alleen als nodig
+    await login()
+
+    return fetch(url, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+async function login() {
+    const url = new URL(LOGIN_URL, new URL(window.location.href).origin)
+    const body = {username: 'test', password: 'bier'}
+
+    return fetch(url, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json' }
+    })
+}

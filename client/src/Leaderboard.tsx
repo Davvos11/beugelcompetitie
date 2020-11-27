@@ -37,7 +37,8 @@ export class Leaderboard extends React.Component<{sortBy: sortBy, descending: bo
 }
 
 function timestampToDate(timestamp: number) {
-    return new Date(timestamp).toLocaleString()
+    return new Date(timestamp).toLocaleString('en-NL',
+        {year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric"})
 }
 
 class LeaderboardEntry extends React.Component<{name: string, timestamp: number, time: number}, {}>{
