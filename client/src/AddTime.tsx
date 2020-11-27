@@ -1,20 +1,35 @@
 import React from "react";
-import {Alert, Button, Col, Form} from "react-bootstrap";
+import {Alert, Button, Col, Form, Spinner} from "react-bootstrap";
 import {addTime} from "./api";
 
-export class AddTime extends React.Component<{}, {error: JSX.Element, name: string, time: number, timestamp: number | undefined}> {
-    constructor(props: {} | Readonly<{}>) {
+export class AddTime extends React.Component<{afterSubmit: ()=>void}, {error: string, loading: boolean, name: string, time: number,timestamp: number | undefined}> {
+    constructor(props: {afterSubmit: ()=>void} | Readonly<{afterSubmit: ()=>void}>) {
         super(props);
         this.state = {
-            error: <span/>,
-            name: '', time: 0, timestamp: undefined
+            error: '', loading: false,
+            name: '', time: 0, timestamp: undefined,
         }
     }
 
     submitTime = (event: React.SyntheticEvent) => {
         event.preventDefault();
+        // Show loading icon
+        this.setState({loading: true})
         // Send to backend
-        addTime(this.state.name, this.state.time, this.state.timestamp).then(r => console.log(r.status))
+        addTime(this.state.name, this.state.time, this.state.timestamp).then(async r => {
+            // Check status
+            if (r.ok) {
+                // Reload leaderboard
+                this.props.afterSubmit()
+                // Clear state
+                this.setState({name: '', time: 0, timestamp: undefined})
+            } else {
+                // Show error
+                this.setState({error: await r.text()})
+            }
+            // Hide loading icon
+            this.setState({loading: false})
+        })
     }
 
     updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,9 +41,9 @@ export class AddTime extends React.Component<{}, {error: JSX.Element, name: stri
         const val = Number(event.target.value)
 
         // Check if it is a positive number
-        let error = <span />
+        let error = ''
         if (isNaN(val) || val <= 0)
-            error = <Alert>De tijd moet een positief getal zijn</Alert>
+            error = "De tijd moet een positief getal zijn"
 
         // Write to state
         this.setState({error})
@@ -36,6 +51,12 @@ export class AddTime extends React.Component<{}, {error: JSX.Element, name: stri
     }
 
     render() {
+        if (this.state.loading) {
+            return <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+            </Spinner>
+        }
+
         return <Form onSubmit={this.submitTime}>
             <Form.Row>
                 <Form.Group as={Col}>
@@ -47,7 +68,7 @@ export class AddTime extends React.Component<{}, {error: JSX.Element, name: stri
                     <Form.Control type="number" min={0} placeholder="Tijd" step={0.001} onChange={this.updateTime}/>
                 </Form.Group>
             </Form.Row>
-            {this.state.error}
+            {this.state.error ? <Alert variant="danger">{this.state.error}</Alert> : ''}
             <Button variant="primary" type="submit">
                 Toevoegen
             </Button>

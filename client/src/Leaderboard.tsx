@@ -1,16 +1,13 @@
 import React from "react";
-import {getLeaderboard} from "./api";
+import {dataType} from "./App";
 
 type sortBy = "name"|"time"|"timestamp"
+type propType = { sortBy: sortBy, descending: boolean, data: dataType}
 
-export class Leaderboard extends React.Component<{sortBy: sortBy, descending: boolean},{data: {name: string, timestamp: number, time: number}[]}> {
-    constructor(props: { sortBy: sortBy; descending: boolean; } | Readonly<{ sortBy: sortBy; descending: boolean; }>) {
+export class Leaderboard extends React.Component<propType, {}> {
+    constructor(props: propType | Readonly<propType>) {
         super(props);
-        this.state = {
-            data: []
-        };
     }
-
 
     render() {
         return <table id="leaderboard" className="table">
@@ -22,17 +19,11 @@ export class Leaderboard extends React.Component<{sortBy: sortBy, descending: bo
                 </tr>
             </thead>
             <tbody>
-            {this.state.data.map((entry, i) => {
+            {this.props.data.map((entry, i) => {
                 return <LeaderboardEntry name={entry.name} time={entry.time} timestamp={entry.timestamp} key={i} />
             })}
             </tbody>
         </table>;
-    }
-
-    componentDidMount() {
-        getLeaderboard(this.props.sortBy, this.props.descending).then(r => {
-            this.setState({data: r})
-        })
     }
 }
 
