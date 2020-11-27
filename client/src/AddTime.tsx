@@ -26,7 +26,7 @@ export class AddTime extends React.Component<propType, stateType> {
         // Show loading icon
         this.setState({loading: true})
 
-        let timestamp = undefined
+        let timestamp
 
         // Check if we need to send the timestamp
         if (this.state.showDateTime) {
@@ -141,7 +141,7 @@ export class AddTime extends React.Component<propType, stateType> {
             </Form.Row>
 
             <Form.Group>
-                <Form.Check type="checkbox" label="Custom datum / tijd" onChange={this.updateCustomTimeCheck}/>
+                <Form.Check type="checkbox" id="date-check" label="Custom datum / tijd" onChange={this.updateCustomTimeCheck}/>
             </Form.Group>
 
             {this.state.showDateTime ? this.timestampInput : ''}
