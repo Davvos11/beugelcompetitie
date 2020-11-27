@@ -1,8 +1,10 @@
 import React from "react";
 import {dataType} from "./App";
+import {Button} from "react-bootstrap";
+import {LeaderboardEntry} from "./LeaderboardEntry";
 
 type sortBy = "name"|"time"|"timestamp"
-type propType = { sortBy: sortBy, descending: boolean, data: dataType}
+type propType = { data: dataType[]}
 
 export class Leaderboard extends React.Component<propType, {}> {
     constructor(props: propType | Readonly<propType>) {
@@ -24,20 +26,5 @@ export class Leaderboard extends React.Component<propType, {}> {
             })}
             </tbody>
         </table>;
-    }
-}
-
-function timestampToDate(timestamp: number) {
-    return new Date(timestamp).toLocaleString('en-NL',
-        {year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric"})
-}
-
-class LeaderboardEntry extends React.Component<{name: string, timestamp: number, time: number}, {}>{
-    render() {
-        return <tr>
-            <td>{this.props.name}</td>
-            <td>{this.props.time}</td>
-            <td>{timestampToDate(this.props.timestamp)}</td>
-        </tr>;
     }
 }

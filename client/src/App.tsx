@@ -8,9 +8,9 @@ import {getLeaderboard} from "./api";
 const sortBy = "time"
 const sortDesc = false
 
-export type dataType = {name: string, timestamp: number, time: number}[]
+export type dataType = {name: string, timestamp: number, time: number}
 
-class App extends React.Component<{}, {data: dataType, key: string}> {
+class App extends React.Component<{}, {data: dataType[], key: string}> {
     constructor(props: Readonly<{}>) {
         super(props);
         this.state = {
@@ -39,7 +39,7 @@ class App extends React.Component<{}, {data: dataType, key: string}> {
                         }}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="leaderboard" title="Leaderboard">
-                        <Leaderboard sortBy="time" descending={false} data={this.state.data}/>
+                        <Leaderboard data={this.state.data}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph" title="Graph">
                         Graph
