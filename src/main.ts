@@ -1,4 +1,4 @@
-import app from "./express.js"
+import app, {sessionChecker} from "./express.js"
 import {login} from "./authentication.js";
 import {DbConnection} from "./database.js";
 import {addToLeaderboard, getLeaderboard} from "./leaderboard.js";
@@ -17,7 +17,7 @@ app.get('/leaderboard',
     ((req, res) => getLeaderboard(req, res, db)))
 
 // Add to leaderboard
-app.post('/leaderboard',
+app.post('/leaderboard', sessionChecker,
     ((req, res) => addToLeaderboard(req, res, db)))
 
 app.listen(PORT, () => {
