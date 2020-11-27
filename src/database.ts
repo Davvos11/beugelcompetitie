@@ -66,7 +66,7 @@ export class DbConnection {
     async getTimes(maxAmount?: number, names?: string[], fromTime?: number, toTime?: number,
                    sortBy: sortOptions = "name", sortDescending = false) {
         const db = await this.getDb()
-        let query = "SELECT * FROM leaderboard"
+        let query = "SELECT name, min(time) AS time, timestamp, decimals FROM leaderboard GROUP BY name"
         const args = []
 
         // Add filters
