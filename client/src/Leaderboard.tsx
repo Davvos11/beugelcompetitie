@@ -4,7 +4,7 @@ import {Button} from "react-bootstrap";
 import {LeaderboardEntry} from "./LeaderboardEntry";
 
 type sortBy = "name"|"time"|"timestamp"
-type propType = { data: dataType[]}
+type propType = { data: dataType[], clickable?: boolean}
 
 export class Leaderboard extends React.Component<propType, {}> {
     constructor(props: propType | Readonly<propType>) {
@@ -22,7 +22,8 @@ export class Leaderboard extends React.Component<propType, {}> {
             </thead>
             <tbody>
             {this.props.data.map((entry, i) => {
-                return <LeaderboardEntry name={entry.name} time={entry.time} timestamp={entry.timestamp} key={i} />
+                return <LeaderboardEntry name={entry.name} time={entry.time}timestamp={entry.timestamp}
+                                         key={i} clickable={this.props.clickable}/>
             })}
             </tbody>
         </table>;

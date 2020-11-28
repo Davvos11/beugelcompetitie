@@ -43,7 +43,7 @@ class App extends React.Component<propType, stateType> {
                         }}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="leaderboard" title="Leaderboard">
-                        <Leaderboard data={this.state.data}/>
+                        <Leaderboard data={this.state.data} clickable={true}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph" title="Graph">
                         Graph

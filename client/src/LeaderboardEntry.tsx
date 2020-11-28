@@ -2,7 +2,7 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import {PersonalList} from "./PersonalList";
 
-type propType = {name: string, timestamp: number, time: number}
+type propType = {name: string, timestamp: number, time: number, clickable?: boolean}
 type stateType = {overlay: JSX.Element | undefined}
 
 export class LeaderboardEntry extends React.Component<propType, stateType>{
@@ -14,10 +14,17 @@ export class LeaderboardEntry extends React.Component<propType, stateType>{
     }
 
     render() {
-        return <tr>
-            <td><Button variant="link" onClick={() => this.showOverlay(this.props.name)} style={{padding: 0, border: 0}}>
+        let name
+
+        if (this.props.clickable) {
+            name = <Button variant="link" onClick={() => this.showOverlay(this.props.name)} style={{padding: 0, border: 0}}>
                 {this.props.name}</Button>
-            </td>
+        } else {
+            name = <span>{this.props.name}</span>
+        }
+
+        return <tr>
+            <td>{name}</td>
             <td>{this.props.time}</td>
             <td>{timestampToDate(this.props.timestamp)}</td>
             <td>{this.state.overlay ? this.state.overlay : ''}</td>
