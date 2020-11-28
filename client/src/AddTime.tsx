@@ -1,8 +1,9 @@
 import React from "react";
 import {Alert, Button, Col, Form, Spinner} from "react-bootstrap";
 import {addTime} from "./api";
+import {Autocomplete} from "./Autocomplete";
 
-type propType = {afterSubmit: ()=>void}
+type propType = {afterSubmit: ()=>void, names: string[]}
 type stateType = {
     error: string, loading: boolean,
     name: string, time: number,
@@ -67,9 +68,9 @@ export class AddTime extends React.Component<propType, stateType> {
         })
     }
 
-    updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateName = (value: string) => {
         // Write to state
-        this.setState({name: event.target.value});
+        this.setState({name: value});
     }
     updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
         // Get value
@@ -132,7 +133,7 @@ export class AddTime extends React.Component<propType, stateType> {
             <Form.Row>
                 <Form.Group as={Col}>
                     <Form.Label>Naam:</Form.Label>
-                    <Form.Control type="text" placeholder="Naam" onChange={this.updateName}/>
+                    <Autocomplete items={this.props.names} placeholder="Naam" onChange={this.updateName}/>
                 </Form.Group>
                 <Form.Group as={Col}>
                     <Form.Label>Tijd (in secondes):</Form.Label>

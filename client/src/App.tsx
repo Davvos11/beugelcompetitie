@@ -10,11 +10,15 @@ const sortDesc = false
 
 export type dataType = {name: string, timestamp: number, time: number}
 
-class App extends React.Component<{}, {data: dataType[], key: string}> {
-    constructor(props: Readonly<{}>) {
+type propType = {}
+type stateType = {data: dataType[], key: string, names: string[]}
+
+class App extends React.Component<propType, stateType> {
+    constructor(props: Readonly<propType>) {
         super(props);
         this.state = {
             data: [],
+            names: [],
             key: 'leaderboard'
         }
     }
@@ -31,7 +35,7 @@ class App extends React.Component<{}, {data: dataType[], key: string}> {
 
                 <Bootstrap.Tabs activeKey={this.state.key} onSelect={(k) => this.setTab(k as string)}>
                     <Bootstrap.Tab eventKey="add" title="Tijd toevoegen">
-                        <AddTime afterSubmit={()=> {
+                        <AddTime names={this.state.names} afterSubmit={()=> {
                             // Show the leaderboard
                             this.setTab('leaderboard')
                             // Update the leaderboard
@@ -52,7 +56,10 @@ class App extends React.Component<{}, {data: dataType[], key: string}> {
 
     componentDidMount() {
         getLeaderboard(sortBy, sortDesc).then(r => {
-            this.setState({data: r})
+            // Get list of names (to be used by autocomplete)
+            const names = r.map((item: dataType) => item.name)
+            // Set leaderboard and names
+            this.setState({data: r, names})
         })
     }
 }
