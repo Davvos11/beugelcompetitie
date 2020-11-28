@@ -15,7 +15,7 @@ export class LeaderboardEntry extends React.Component<propType, stateType>{
 
     render() {
         return <tr>
-            <td><Button variant="link" onClick={() => this.showOverlay(this.props.name)}>
+            <td><Button variant="link" onClick={() => this.showOverlay(this.props.name)} style={{padding: 0, border: 0}}>
                 {this.props.name}</Button>
             </td>
             <td>{this.props.time}</td>
