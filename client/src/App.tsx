@@ -5,13 +5,12 @@ import {Leaderboard} from "./Leaderboard";
 import {AddTime} from "./AddTime";
 import {getLeaderboard} from "./api";
 
-const sortBy = "time"
-const sortDesc = false
 
 export type dataType = {name: string, timestamp: number, time: number}
+export type sortBy = "name"|"time"|"timestamp"
 
 type propType = {}
-type stateType = {data: dataType[], key: string, names: string[]}
+type stateType = {data: dataType[], key: string, names: string[], sortBy: sortBy, sortDesc: boolean}
 
 class App extends React.Component<propType, stateType> {
     constructor(props: Readonly<propType>) {
@@ -19,7 +18,8 @@ class App extends React.Component<propType, stateType> {
         this.state = {
             data: [],
             names: [],
-            key: 'leaderboard'
+            key: 'leaderboard',
+            sortBy: "time", sortDesc: false
         }
     }
 
@@ -43,7 +43,11 @@ class App extends React.Component<propType, stateType> {
                         }}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="leaderboard" title="Leaderboard">
-                        <Leaderboard data={this.state.data} clickable={true}/>
+                        <Leaderboard data={this.state.data} clickable={true}
+                                     sort={{
+                                         sortBy: this.state.sortBy, sortDesc: this.state.sortDesc,
+                                         onSortChange: (by, desc) => {this.setState({sortBy: by, sortDesc: desc})}
+                                     }}/>
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph" title="Graph">
                         Graph
@@ -54,13 +58,23 @@ class App extends React.Component<propType, stateType> {
         </Bootstrap.Container>
     }
 
-    componentDidMount() {
-        getLeaderboard(sortBy, sortDesc).then(r => {
+    updateLeaderboard = () => {
+        getLeaderboard(this.state.sortBy, this.state.sortDesc).then(r => {
             // Get list of names (to be used by autocomplete)
             const names = r.map((item: dataType) => item.name)
             // Set leaderboard and names
             this.setState({data: r, names})
         })
+    }
+
+    componentDidMount() {
+        this.updateLeaderboard()
+    }
+
+    componentDidUpdate(prevProps: Readonly<propType>, prevState: Readonly<stateType>, snapshot?: any) {
+        // Check if sort values changed
+        if (this.state.sortBy !== prevState.sortBy || this.state.sortDesc !== prevState.sortDesc)
+            this.updateLeaderboard()
     }
 }
 

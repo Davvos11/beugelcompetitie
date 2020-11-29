@@ -26,7 +26,7 @@ export class PersonalList extends React.Component<propType, stateType> {
                 <Modal.Title>Tijden van {this.props.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Leaderboard data={this.state.data}/>
+                <Leaderboard data={this.state.data} sort={false}/>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" onClick={this.close}>
