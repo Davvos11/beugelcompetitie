@@ -6,6 +6,7 @@ import {AddTime} from "./AddTime";
 import {getLeaderboard} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {Graph} from "./Graph";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -55,7 +56,7 @@ class App extends React.Component<propType, stateType> {
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph"
                                    title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
-                        Graph
+                        <Graph names={this.state.names}/>
                     </Bootstrap.Tab>
                 </Bootstrap.Tabs>
 
