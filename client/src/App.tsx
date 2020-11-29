@@ -4,6 +4,8 @@ import * as Bootstrap from 'react-bootstrap'
 import {Leaderboard} from "./Leaderboard";
 import {AddTime} from "./AddTime";
 import {getLeaderboard} from "./api";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -34,7 +36,8 @@ class App extends React.Component<propType, stateType> {
                 <p className="lead">Leaderboard voor de beugelcompetitie van de <b>Lit</b>terkerkstraat</p>
 
                 <Bootstrap.Tabs activeKey={this.state.key} onSelect={(k) => this.setTab(k as string)}>
-                    <Bootstrap.Tab eventKey="add" title="Tijd toevoegen">
+                    <Bootstrap.Tab eventKey="add"
+                                   title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
                         <AddTime names={this.state.names} afterSubmit={()=> {
                             // Show the leaderboard
                             this.setTab('leaderboard')
@@ -42,14 +45,16 @@ class App extends React.Component<propType, stateType> {
                             this.componentDidMount()
                         }}/>
                     </Bootstrap.Tab>
-                    <Bootstrap.Tab eventKey="leaderboard" title="Leaderboard">
+                    <Bootstrap.Tab eventKey="leaderboard"
+                                   title={<span><FontAwesomeIcon icon={faList}/> Leaderboard</span>}>
                         <Leaderboard data={this.state.data} clickable={true}
                                      sort={{
                                          sortBy: this.state.sortBy, sortDesc: this.state.sortDesc,
                                          onSortChange: (by, desc) => {this.setState({sortBy: by, sortDesc: desc})}
                                      }}/>
                     </Bootstrap.Tab>
-                    <Bootstrap.Tab eventKey="graph" title="Graph">
+                    <Bootstrap.Tab eventKey="graph"
+                                   title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
                         Graph
                     </Bootstrap.Tab>
                 </Bootstrap.Tabs>

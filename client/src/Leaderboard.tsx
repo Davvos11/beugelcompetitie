@@ -2,6 +2,8 @@ import React from "react";
 import {dataType, sortBy} from "./App";
 import {LeaderboardEntry} from "./LeaderboardEntry";
 import {Button} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSortDown, faSortUp} from "@fortawesome/free-solid-svg-icons";
 
 export type sortType = {sortBy: sortBy, sortDesc: boolean, onSortChange: (by: sortBy, desc: boolean)=>void} | false
 
@@ -39,10 +41,13 @@ export class Leaderboard extends React.Component<propType, stateType> {
         }
     }
 
+
     sortButton = (title: string, value: sortBy) => {
         if (this.props.sort) {
+            const sortIcon = <FontAwesomeIcon icon={this.state.sortDesc ? faSortUp : faSortDown}/>
+
             return <Button variant="link" onClick={() => this.changeSort(value)} style={{padding: 0, border: 0}}>
-                {value === this.state.sortBy ? <b>{title}</b> : title}
+                {value === this.state.sortBy ? <b>{title} {sortIcon}</b> : title}
             </Button>
         } else {
             return <span>{title}</span>
