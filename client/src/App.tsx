@@ -7,6 +7,7 @@ import {getAllTimes, getLeaderboard} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
+import {GraphSettings, modeType, modeValue} from "./GraphSettings";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -14,19 +15,25 @@ export type sortBy = "name"|"time"|"timestamp"
 
 type propType = {}
 type stateType = {
-    data: dataType[], graphData: dataType[]
+    data: dataType[],
     key: string, names: string[],
-    sortBy: sortBy, sortDesc: boolean}
+    sortBy: sortBy, sortDesc: boolean,
+    graphData: dataType[],
+    graphMode: modeValue
+}
+
+const modes: modeType[] = [{name: "Alle tijden", value: "all"}, {name: "Alleen nieuwe records", value: "best"}]
 
 class App extends React.Component<propType, stateType> {
     constructor(props: Readonly<propType>) {
         super(props);
         this.state = {
             data: [],
-            graphData: [],
             names: [],
             key: 'graph',
-            sortBy: "time", sortDesc: false
+            sortBy: "time", sortDesc: false,
+            graphData: [],
+            graphMode: "best"
         }
     }
 
@@ -61,7 +68,11 @@ class App extends React.Component<propType, stateType> {
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph"
                                    title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
-                        <Graph data={this.state.graphData}/>
+                        <GraphSettings
+                            modes={modes} mode={this.state.graphMode}
+                            onModeChange={(mode => this.setState({graphMode: mode}))}
+                        />
+                        <Graph data={this.state.graphData} mode={this.state.graphMode}/>
                     </Bootstrap.Tab>
                 </Bootstrap.Tabs>
 

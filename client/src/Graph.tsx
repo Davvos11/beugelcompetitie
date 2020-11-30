@@ -2,8 +2,12 @@ import React from "react";
 import {dataType} from "./App";
 import { ResponsiveLine } from '@nivo/line'
 import dateformat from 'dateformat'
+import {GraphSettings, modeType, modeValue} from "./GraphSettings";
 
-type propType = {data: dataType[]}
+type propType = {
+    data: dataType[],
+    mode: modeValue
+}
 type stateType = {
     enabledNames: string[], names: string[],
     lines: line[],
@@ -20,10 +24,9 @@ export class Graph extends React.Component<propType, stateType> {
         super(props);
 
         this.state = {
-            names: [], enabledNames: [], lines: [], lowestTime: 0
+            names: [], enabledNames: [], lines: [], lowestTime: 0,
         }
     }
-
     processData = (enableAllNames = true) => {
         // Get list of names (to be used by autocomplete)
         let names = this.props.data.map((item: dataType) => item.name)
@@ -31,7 +34,7 @@ export class Graph extends React.Component<propType, stateType> {
         names = [...new Set(names)];
 
         // Generate lines
-        const {lines, lowestTime} = generateLines(this.props.data)
+        const {lines, lowestTime} = generateLines(this.props.data, this.props.mode)
 
         // Save in state
         if (enableAllNames) {
@@ -128,7 +131,7 @@ export class Graph extends React.Component<propType, stateType> {
     }
 }
 
-function generateLines(data: dataType[]) {
+function generateLines(data: dataType[], graphMode: modeValue) {
     const result: {[key: string]: line } = {}
     let lowestTime = -1
 
@@ -150,6 +153,24 @@ function generateLines(data: dataType[]) {
             lowestTime = item.time
     })
 
+    // If we are on "best times" mode, remove all times that are not improvements
+    if (graphMode === "best") {
+        for (const name in result) {
+            if (!result.hasOwnProperty(name)) continue
+            let bestTime = -1
+            // Loop over each entry
+            result[name].data.forEach((entry, index) => {
+                // If this entry is better than the current best time, keep it
+                if (entry.y <= bestTime || bestTime === -1) {
+                    bestTime = entry.y
+                } else {
+                    // Otherwise, discard this entry
+                    result[name].data.splice(index, 1)
+                }
+            })
+        }
+    }
+
     // Add an entry with the current timestamp for all lines (so that it will flow until the end)
     const currentTime = formatDate(new Date())
     for (const name in result) {
@@ -163,7 +184,7 @@ function generateLines(data: dataType[]) {
         result[name].data = list
     }
 
-    console.log(result)
+
     return {lines: Object.values(result), lowestTime}
 }
 
