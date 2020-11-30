@@ -2,7 +2,7 @@ import React from "react";
 import {dataType} from "./App";
 import { ResponsiveLine } from '@nivo/line'
 import dateformat from 'dateformat'
-import {GraphSettings, modeType, modeValue} from "./GraphSettings";
+import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
 
 type propType = {
     data: dataType[],
@@ -45,7 +45,6 @@ export class Graph extends React.Component<propType, stateType> {
     }
 
     render() {
-        console.log(this.state.lowestTime)
         return <div style={{height: "500px"}}>
             <ResponsiveLine
                 data={this.state.lines}

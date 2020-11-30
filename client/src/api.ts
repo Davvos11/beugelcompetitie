@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import {dateRangeType} from "./GraphSettings";
 
 const LOGIN_URL = '/login'
 const LEADERBOARD_URL = '/leaderboard'
@@ -28,12 +29,14 @@ export async function getLeaderboard(sortBy: sortType = "time", descending = tru
     })
 }
 
-export async function getAllTimes(sortBy: sortType = "timestamp", descending = true, names?: string[]) {
+export async function getAllTimes(sortBy: sortType = "timestamp", descending = true, names?: string[], dateRange?: dateRangeType) {
     const url = createUrl(LEADERBOARD_URL, {
         sort_by: sortBy,
         sort_descending: descending,
         names: names ? names?.join('') : '',
-        only_highscore: false
+        only_highscore: false,
+        from: dateRange ? dateRange?.from.getTime() : undefined,
+        to: dateRange ? dateRange?.to.getTime() : undefined
     })
 
     return fetch(url, {

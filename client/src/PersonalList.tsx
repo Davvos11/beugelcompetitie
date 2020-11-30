@@ -38,7 +38,6 @@ export class PersonalList extends React.Component<propType, stateType> {
 
     componentDidMount() {
         getAllTimes(this.state.sortBy, this.state.sortDesc, [this.props.name]).then(r => {
-            console.log(r)
             this.setState({data: r})
         })
     }

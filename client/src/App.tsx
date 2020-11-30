@@ -7,7 +7,7 @@ import {getAllTimes, getLeaderboard} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
-import {GraphSettings, modeType, modeValue} from "./GraphSettings";
+import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -20,6 +20,7 @@ type stateType = {
     sortBy: sortBy, sortDesc: boolean,
     graphData: dataType[],
     graphMode: modeValue
+    graphDateRange: dateRangeType
 }
 
 const modes: modeType[] = [{name: "Alle tijden", value: "all"}, {name: "Alleen nieuwe records", value: "best"}]
@@ -33,7 +34,8 @@ class App extends React.Component<propType, stateType> {
             key: 'graph',
             sortBy: "time", sortDesc: false,
             graphData: [],
-            graphMode: "best"
+            graphMode: "best",
+            graphDateRange: {from: new Date(), to: new Date()}
         }
     }
 
@@ -71,8 +73,13 @@ class App extends React.Component<propType, stateType> {
                         <GraphSettings
                             modes={modes} mode={this.state.graphMode}
                             onModeChange={(mode => this.setState({graphMode: mode}))}
+                            dateRange={this.state.graphDateRange}
+                            onDateChange={range => this.setState({graphDateRange: range})}
                         />
-                        <Graph data={this.state.graphData} mode={this.state.graphMode}/>
+                        <Graph
+                            data={this.state.graphData}
+                            mode={this.state.graphMode}
+                        />
                     </Bootstrap.Tab>
                 </Bootstrap.Tabs>
 
@@ -89,22 +96,41 @@ class App extends React.Component<propType, stateType> {
         })
     }
 
-    updateGraph = () => {
-        getAllTimes("timestamp", false).then(r => {
+    updateGraph = (resetDateRange = false) => {
+        getAllTimes("timestamp", false, undefined,
+            (resetDateRange ? undefined : this.state.graphDateRange)).then(r => {
             // Set graph values
             this.setState({graphData: r})
+
+            if (resetDateRange) {
+                // Get oldest time
+                let oldestTimestamp = Date.now()
+                r.forEach((entry: dataType) => {
+                    console.log(new Date(oldestTimestamp), new Date(entry.timestamp))
+                    if (entry.timestamp < oldestTimestamp) {
+                        oldestTimestamp = entry.timestamp
+                    }
+                })
+
+
+                this.setState({graphDateRange: {from: new Date(oldestTimestamp), to: new Date()}})
+            }
         })
     }
 
     componentDidMount() {
         this.updateLeaderboard()
-        this.updateGraph()
+        this.updateGraph(true)
     }
 
     componentDidUpdate(prevProps: Readonly<propType>, prevState: Readonly<stateType>, snapshot?: any) {
         // Check if sort values changed
         if (this.state.sortBy !== prevState.sortBy || this.state.sortDesc !== prevState.sortDesc)
             this.updateLeaderboard()
+        // Check if date range changed
+        if (this.state.graphDateRange !== prevState.graphDateRange) {
+            this.updateGraph()
+        }
     }
 }
 

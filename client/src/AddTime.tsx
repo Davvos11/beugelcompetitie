@@ -41,7 +41,6 @@ export class AddTime extends React.Component<propType, stateType> {
                 const date = parseTime(this.state.timeString, this.state.date)
                 // Set timestamp
                 timestamp = date.getTime()
-                console.log(date, date.getTime())
             } catch (e) {
                 // Show error
                 this.setState({error: "Please provide a valid time and date"})
@@ -99,7 +98,6 @@ export class AddTime extends React.Component<propType, stateType> {
         let error = ''
         if (isNaN(val.getDate()))
             error = "De datum is incorrect"
-        console.log('Date', val, val.getTime())
 
         // Write to state
         this.setState({error})
