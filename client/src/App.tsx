@@ -79,7 +79,7 @@ class App extends React.Component<propType, stateType> {
     }
 
     updateGraph = () => {
-        getAllTimes().then(r => {
+        getAllTimes("timestamp", false).then(r => {
             // Set graph values
             this.setState({graphData: r})
         })

@@ -1,61 +1,61 @@
 import React from "react";
 import {dataType} from "./App";
-import {getAllTimes} from "./api";
 import { ResponsiveLine } from '@nivo/line'
 import dateformat from 'dateformat'
 
 type propType = {data: dataType[]}
 type stateType = {
     enabledNames: string[], names: string[],
-    lines: line[]
+    lines: line[],
+    lowestTime: number
 }
 
 type line = { id: string, data: { x: string, y: number }[]}
 
-const fromT = Date.now() - 1000*60*60*24*14
-const colours = ["red", "green", "blue", "yellow", "purple", "black", "cyan"]
+const marginBottom = 4
 
 export class Graph extends React.Component<propType, stateType> {
 
     constructor(props: propType | Readonly<propType>) {
         super(props);
-        this.processData()
 
         this.state = {
-            names: [], enabledNames: [], lines: []
+            names: [], enabledNames: [], lines: [], lowestTime: 0
         }
     }
 
-    processData = () => {
+    processData = (enableAllNames = true) => {
         // Get list of names (to be used by autocomplete)
         let names = this.props.data.map((item: dataType) => item.name)
         // Remove duplicates
         names = [...new Set(names)];
 
         // Generate lines
-        const lines = generateLines(this.props.data)
+        const {lines, lowestTime} = generateLines(this.props.data)
 
         // Save in state
-        if (true) {
+        if (enableAllNames) {
             this.setState({enabledNames: names})
         }
 
-        this.setState({names, lines})
+        this.setState({names, lines, lowestTime})
     }
 
     render() {
+        console.log(this.state.lowestTime)
         return <div style={{height: "500px"}}>
             <ResponsiveLine
                 data={this.state.lines}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                 xScale={{
                     type: "time",
-                    format: "%Y-%m-%d %H:%M"
+                    format: "%Y-%m-%d %H:%M",
+                    useUTC: false,
                 }}
                 xFormat="time:%Y-%m-%d %H:%M"
                 yScale={{
                     type: "linear",
-                    min: 0,
+                    min: Math.max(0, this.state.lowestTime - marginBottom),
                     max: "auto",
                     stacked: false,
                     reverse: false
@@ -73,19 +73,20 @@ export class Graph extends React.Component<propType, stateType> {
                 }}
                 axisBottom={{
                     format: "%d %b",
-                    // tickValues: "every 2 days",
+                    tickValues: "every 7 days",
                     // tickRotation: -90,
-                    legend: "time scale",
-                    legendOffset: -12
+                    legend: "Datum",
+                    legendPosition: "middle",
+                    legendOffset: 40
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
                 pointColor={{ theme: "background" }}
                 pointBorderWidth={2}
                 pointBorderColor={{ from: "serieColor" }}
-                pointLabel="y"
                 pointLabelYOffset={-12}
-                useMesh={true}
+                enableCrosshair={false}
+                enableSlices="x"
                 legends={[
                     {
                         anchor: "bottom-right",
@@ -116,6 +117,10 @@ export class Graph extends React.Component<propType, stateType> {
         </div>
     }
 
+    componentDidMount() {
+        this.processData()
+    }
+
     componentDidUpdate(prevProps: Readonly<propType>, prevState: Readonly<stateType>, snapshot?: any) {
         // Check if props have changed
         if (this.props !== prevProps)
@@ -125,7 +130,7 @@ export class Graph extends React.Component<propType, stateType> {
 
 function generateLines(data: dataType[]) {
     const result: {[key: string]: line } = {}
-
+    let lowestTime = -1
 
     data.forEach(item => {
         // Create data object
@@ -139,10 +144,27 @@ function generateLines(data: dataType[]) {
             // Add the name to the results together with this entry
             result[item.name] = {id: item.name, data: [newData]}
         }
+
+        // Update lowest time value
+        if (item.time < lowestTime || lowestTime === -1)
+            lowestTime = item.time
     })
 
+    // Add an entry with the current timestamp for all lines (so that it will flow until the end)
+    const currentTime = formatDate(new Date())
+    for (const name in result) {
+        if (!result.hasOwnProperty(name)) continue
+        const list = result[name].data
+
+        // Get last time
+        const lastTime = list[list.length - 1].y
+        // Add to the list with current timestamp
+        list.push({y: lastTime, x: currentTime})
+        result[name].data = list
+    }
+
     console.log(result)
-    return Object.values(result)
+    return {lines: Object.values(result), lowestTime}
 }
 
 function formatDate(date: Date) {
