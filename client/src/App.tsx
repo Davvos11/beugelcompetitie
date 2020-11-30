@@ -3,7 +3,7 @@ import './App.css';
 import * as Bootstrap from 'react-bootstrap'
 import {Leaderboard} from "./Leaderboard";
 import {AddTime} from "./AddTime";
-import {getLeaderboard} from "./api";
+import {getAllTimes, getLeaderboard} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
@@ -13,15 +13,19 @@ export type dataType = {name: string, timestamp: number, time: number}
 export type sortBy = "name"|"time"|"timestamp"
 
 type propType = {}
-type stateType = {data: dataType[], key: string, names: string[], sortBy: sortBy, sortDesc: boolean}
+type stateType = {
+    data: dataType[], graphData: dataType[]
+    key: string, names: string[],
+    sortBy: sortBy, sortDesc: boolean}
 
 class App extends React.Component<propType, stateType> {
     constructor(props: Readonly<propType>) {
         super(props);
         this.state = {
             data: [],
+            graphData: [],
             names: [],
-            key: 'leaderboard',
+            key: 'graph',
             sortBy: "time", sortDesc: false
         }
     }
@@ -40,9 +44,10 @@ class App extends React.Component<propType, stateType> {
                     <Bootstrap.Tab eventKey="add"
                                    title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
                         <AddTime names={this.state.names} afterSubmit={()=> {
+                            // Todo go back to previous tab
                             // Show the leaderboard
                             this.setTab('leaderboard')
-                            // Update the leaderboard
+                            // Update this object
                             this.componentDidMount()
                         }}/>
                     </Bootstrap.Tab>
@@ -56,7 +61,7 @@ class App extends React.Component<propType, stateType> {
                     </Bootstrap.Tab>
                     <Bootstrap.Tab eventKey="graph"
                                    title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
-                        <Graph names={this.state.names}/>
+                        <Graph data={this.state.graphData}/>
                     </Bootstrap.Tab>
                 </Bootstrap.Tabs>
 
@@ -73,8 +78,16 @@ class App extends React.Component<propType, stateType> {
         })
     }
 
+    updateGraph = () => {
+        getAllTimes().then(r => {
+            // Set graph values
+            this.setState({graphData: r})
+        })
+    }
+
     componentDidMount() {
         this.updateLeaderboard()
+        this.updateGraph()
     }
 
     componentDidUpdate(prevProps: Readonly<propType>, prevState: Readonly<stateType>, snapshot?: any) {
