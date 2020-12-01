@@ -33,7 +33,7 @@ export async function getAllTimes(sortBy: sortType = "timestamp", descending = t
     const url = createUrl(LEADERBOARD_URL, {
         sort_by: sortBy,
         sort_descending: descending,
-        names: names ? names?.join('') : '',
+        names: names ? names?.join(',') : '',
         only_highscore: false,
         from: dateRange ? dateRange?.from.getTime() : undefined,
         to: dateRange ? dateRange?.to.getTime() : undefined

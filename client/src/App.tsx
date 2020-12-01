@@ -21,6 +21,7 @@ type stateType = {
     graphData: dataType[],
     graphMode: modeValue
     graphDateRange: dateRangeType
+    graphNames: string[]
 }
 
 const modes: modeType[] = [{name: "Alle tijden", value: "all"}, {name: "Alleen nieuwe records", value: "best"}]
@@ -35,7 +36,8 @@ class App extends React.Component<propType, stateType> {
             sortBy: "time", sortDesc: false,
             graphData: [],
             graphMode: "best",
-            graphDateRange: {from: new Date(), to: new Date()}
+            graphDateRange: {from: new Date(), to: new Date()},
+            graphNames: []
         }
     }
 
@@ -75,6 +77,8 @@ class App extends React.Component<propType, stateType> {
                             onModeChange={(mode => this.setState({graphMode: mode}))}
                             dateRange={this.state.graphDateRange}
                             onDateChange={range => this.setState({graphDateRange: range})}
+                            names={this.state.names}
+                            onNameChange={names => this.setState({graphNames: Array.from(names)})}
                         />
                         <Graph
                             data={this.state.graphData}
@@ -97,7 +101,8 @@ class App extends React.Component<propType, stateType> {
     }
 
     updateGraph = (resetDateRange = false) => {
-        getAllTimes("timestamp", false, undefined,
+        getAllTimes("timestamp", false,
+            this.state.graphNames,
             (resetDateRange ? undefined : this.state.graphDateRange)).then(r => {
             // Set graph values
             this.setState({graphData: r})
@@ -106,7 +111,6 @@ class App extends React.Component<propType, stateType> {
                 // Get oldest time
                 let oldestTimestamp = Date.now()
                 r.forEach((entry: dataType) => {
-                    console.log(new Date(oldestTimestamp), new Date(entry.timestamp))
                     if (entry.timestamp < oldestTimestamp) {
                         oldestTimestamp = entry.timestamp
                     }
@@ -127,8 +131,8 @@ class App extends React.Component<propType, stateType> {
         // Check if sort values changed
         if (this.state.sortBy !== prevState.sortBy || this.state.sortDesc !== prevState.sortDesc)
             this.updateLeaderboard()
-        // Check if date range changed
-        if (this.state.graphDateRange !== prevState.graphDateRange) {
+        // Check if date range or name list changed
+        if (this.state.graphDateRange !== prevState.graphDateRange || this.state.graphNames !== prevState.graphNames) {
             this.updateGraph()
         }
     }

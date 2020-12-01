@@ -6,7 +6,7 @@ import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings
 
 type propType = {
     data: dataType[],
-    mode: modeValue
+    mode: modeValue,
 }
 type stateType = {
     enabledNames: string[], names: string[],
