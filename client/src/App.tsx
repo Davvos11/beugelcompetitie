@@ -3,12 +3,13 @@ import './App.css';
 import * as Bootstrap from 'react-bootstrap'
 import {Leaderboard} from "./Leaderboard";
 import {AddTime} from "./AddTime";
-import {getAllTimes, getLeaderboard} from "./api";
+import {getAllTimes, getLeaderboard, isLoggedIn} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
 import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
 import {Alert, Spinner} from "react-bootstrap";
+import {Login} from "./Login";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -25,6 +26,7 @@ type stateType = {
     graphNames: string[]
     loading: boolean
     error: string
+    loggedIn: boolean
 }
 
 const modes: modeType[] = [{name: "Alle tijden", value: "all"}, {name: "Alleen nieuwe records", value: "best"}]
@@ -42,7 +44,8 @@ class App extends React.Component<propType, stateType> {
             graphDateRange: {from: new Date(), to: new Date()},
             graphNames: [],
             loading: true,
-            error: ""
+            error: "",
+            loggedIn: isLoggedIn()
         }
     }
 
@@ -94,13 +97,19 @@ class App extends React.Component<propType, stateType> {
                                     onSelect={(k) => this.setTab(k as string)}>
                         <Bootstrap.Tab eventKey="add"
                                        title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
-                            <AddTime names={this.state.names} afterSubmit={()=> {
-                                // Todo go back to previous tab
-                                // Show the leaderboard
-                                this.setTab('leaderboard')
-                                // Update this object
-                                this.componentDidMount()
-                            }}/>
+                            <div style={{display: (this.state.loggedIn ? "none" : "initial")}}>
+                                <Login afterLogin={()=>this.setState({loggedIn: isLoggedIn()})} />
+                            </div>
+
+                            <div style={{display: (this.state.loggedIn ? "initial" : "none")}}>
+                                <AddTime names={this.state.names} afterSubmit={()=> {
+                                    // Todo go back to previous tab
+                                    // Show the leaderboard
+                                    this.setTab('leaderboard')
+                                    // Update this object
+                                    this.componentDidMount()
+                                }}/>
+                            </div>
                         </Bootstrap.Tab>
                         <Bootstrap.Tab eventKey="leaderboard"
                                        title={<span><FontAwesomeIcon icon={faList}/> Leaderboard</span>}>
