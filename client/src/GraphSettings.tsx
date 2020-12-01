@@ -15,6 +15,7 @@ type stateType = {
     currentMode: string
     currentRange: dateRangeType
     enabledNames: Set<string>
+    filterDropdown: boolean
 }
 export type dateRangeType = {from: Date, to: Date}
 
@@ -24,7 +25,8 @@ export class GraphSettings extends React.Component<propType, stateType> {
         this.state = {
             currentMode: this.props.mode,
             currentRange: this.props.dateRange,
-            enabledNames: new Set(this.props.names)
+            enabledNames: new Set(),
+            filterDropdown: false
         }
     }
 
@@ -50,15 +52,17 @@ export class GraphSettings extends React.Component<propType, stateType> {
                 </div>
             </Col>
             <Col xs="auto" md={4} xl={2} className={colClassNames}>
-                <div className="ml-auto mx-xl-auto" style={{display: "table"}}><Dropdown>
-                    <Dropdown.Toggle>Filter</Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {this.props.names.map((value, index) => (
-                            <Form.Check type="checkbox" id={`name-check${index}`} label={value}
-                                        onChange={(event: ChangeEvent<HTMLInputElement>) => this.onNameCheck(event, value)}/>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown></div>
+                <div className="ml-auto mx-xl-auto" style={{display: "table"}}>
+                    <Dropdown show={this.state.filterDropdown} onToggle={isOpen => this.setState({filterDropdown: isOpen})}>
+                        <Dropdown.Toggle>Filter</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            {this.props.names.map((value, index) => (
+                                <Form.Check type="checkbox" id={`name-check${index}`} label={value} defaultChecked={this.state.enabledNames.has(value)}
+                                            onChange={(event: ChangeEvent<HTMLInputElement>) => this.onNameCheck(event, value)}/>
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
             </Col>
             <Col xs={12} sm={6} md={6} xl={3} className={colClassNames}>
                 <InputGroup>
