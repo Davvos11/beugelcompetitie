@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
 import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
-import {Spinner} from "react-bootstrap";
+import {Alert, Spinner} from "react-bootstrap";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -24,6 +24,7 @@ type stateType = {
     graphDateRange: dateRangeType
     graphNames: string[]
     loading: boolean
+    error: string
 }
 
 const modes: modeType[] = [{name: "Alle tijden", value: "all"}, {name: "Alleen nieuwe records", value: "best"}]
@@ -41,6 +42,7 @@ class App extends React.Component<propType, stateType> {
             graphDateRange: {from: new Date(), to: new Date()},
             graphNames: [],
             loading: true,
+            error: ""
         }
     }
 
@@ -81,6 +83,10 @@ class App extends React.Component<propType, stateType> {
                         <Spinner animation="border" role="status" style={{margin: "auto 100px"}}>
                             <span className="sr-only">Loading...</span>
                         </Spinner>
+                    </div>
+
+                    <div style={{width: "100%", display: (this.state.error ? "initial" : "none")}}>
+                        <Alert variant="danger" dismissible onClose={()=>this.setState({error: ""})}>{this.state.error}</Alert>
                     </div>
 
                     <div style={{display: (this.state.loading ? "none" : "initial")}}>
@@ -127,33 +133,44 @@ class App extends React.Component<propType, stateType> {
         </Bootstrap.Container>
     }
 
+    setError = (error: string) => {
+        this.setState({error})
+    }
+
     updateLeaderboard = async () => {
-        const r = await getLeaderboard(this.state.sortBy, this.state.sortDesc)
-        // Get list of names (to be used by autocomplete)
-        const names = r.map((item: dataType) => item.name)
-        // Set leaderboard and names
-        this.setState({data: r, names})
+        try {
+            const r = await getLeaderboard(this.state.sortBy, this.state.sortDesc)
+            // Get list of names (to be used by autocomplete)
+            const names = r.map((item: dataType) => item.name)
+            // Set leaderboard and names
+            this.setState({data: r, names})
+        } catch (e) {
+            this.setError(e.message)
+        }
     }
 
     updateGraph = async (resetDateRange = false) => {
-        const r = await getAllTimes("timestamp", false,
-            this.state.graphNames,
-            (resetDateRange ? undefined : this.state.graphDateRange))
+        try {
+            const r = await getAllTimes("timestamp", false,
+                this.state.graphNames,
+                (resetDateRange ? undefined : this.state.graphDateRange))
 
-        // Set graph values
-        this.setState({graphData: r})
+            // Set graph values
+            this.setState({graphData: r})
 
-        if (resetDateRange) {
-            // Get oldest time
-            let oldestTimestamp = Date.now()
-            r.forEach((entry: dataType) => {
-                if (entry.timestamp < oldestTimestamp) {
-                    oldestTimestamp = entry.timestamp
-                }
-            })
+            if (resetDateRange) {
+                // Get oldest time
+                let oldestTimestamp = Date.now()
+                r.forEach((entry: dataType) => {
+                    if (entry.timestamp < oldestTimestamp) {
+                        oldestTimestamp = entry.timestamp
+                    }
+                })
 
-
-            this.setState({graphDateRange: {from: new Date(oldestTimestamp), to: new Date()}})
+                this.setState({graphDateRange: {from: new Date(oldestTimestamp), to: new Date()}})
+            }
+        } catch (e) {
+            this.setError(e.message)
         }
     }
 
