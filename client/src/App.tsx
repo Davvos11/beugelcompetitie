@@ -45,7 +45,7 @@ class App extends React.Component<propType, stateType> {
             graphNames: [],
             loading: true,
             error: "",
-            loggedIn: isLoggedIn()
+            loggedIn: false
         }
     }
 
@@ -98,7 +98,7 @@ class App extends React.Component<propType, stateType> {
                         <Bootstrap.Tab eventKey="add"
                                        title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
                             <div style={{display: (this.state.loggedIn ? "none" : "initial")}}>
-                                <Login afterLogin={()=>this.setState({loggedIn: isLoggedIn()})} />
+                                <Login afterLogin={async ()=>this.setState({loggedIn: await isLoggedIn()})} />
                             </div>
 
                             <div style={{display: (this.state.loggedIn ? "initial" : "none")}}>
@@ -108,7 +108,7 @@ class App extends React.Component<propType, stateType> {
                                     this.setTab('leaderboard')
                                     // Update this object
                                     this.componentDidMount()
-                                }}/>
+                                }} beforeSubmit={this.checkLogin}/>
                             </div>
                         </Bootstrap.Tab>
                         <Bootstrap.Tab eventKey="leaderboard"
@@ -184,10 +184,18 @@ class App extends React.Component<propType, stateType> {
         }
     }
 
+    checkLogin = async () => {
+        return isLoggedIn().then(loggedIn => {
+            this.setState({loggedIn})
+            return loggedIn
+        })
+    }
+
     componentDidMount() {
         const promises: Promise<any>[] = []
         promises.push(this.updateLeaderboard())
         promises.push(this.updateGraph(true))
+        promises.push(this.checkLogin())
 
         Promise.all(promises).then(() => {
             this.loading(false)

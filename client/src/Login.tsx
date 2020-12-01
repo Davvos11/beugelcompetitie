@@ -70,17 +70,15 @@ export class Login extends React.Component<propType, stateType> {
         this.setState({loading: true})
 
         // Send to backend
-        login(this.state.username, this.state.password).then(async r => {
-            // Check status
-            if (r.ok) {
-                // Hide login
-                this.props.afterLogin()
-                // Clear state
-                this.setState({username: '', password: ''})
-            } else {
-                // Show error
-                this.setState({error: await r.text()})
-            }
+        login(this.state.username, this.state.password).then(() => {
+            // Hide login
+            this.props.afterLogin()
+            // Clear state
+            this.setState({username: '', password: ''})
+        }).catch(e => {
+            // Show error
+            this.setState({error: e})
+        }).then(() => {
             // Hide loading icon
             this.setState({loading: false})
         })

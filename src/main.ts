@@ -12,6 +12,12 @@ const db = new DbConnection()
 app.post('/login',
     ((req, res) => login(req, res, db)))
 
+// Login status
+app.get('/login', sessionChecker,
+    ((req, res) => {
+        res.sendStatus(204)
+    }))
+
 // Get leaderboard
 app.get('/leaderboard',
     ((req, res) => getLeaderboard(req, res, db)))

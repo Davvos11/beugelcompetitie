@@ -72,6 +72,12 @@ export async function login(username: string, password: string) {
     })
 }
 
-export function isLoggedIn() {
-    return Boolean(document.cookie.match(/^(.*;)?\s*/+USER_COOKIE+/\s*=\s*[^;]+(.*)?$/))
+export async function isLoggedIn() {
+    const url = new URL(LOGIN_URL, new URL(window.location.href).origin)
+
+    return fetch(url, {
+        method: "GET",
+    }).then(async r => {
+        return r.ok;
+    })
 }

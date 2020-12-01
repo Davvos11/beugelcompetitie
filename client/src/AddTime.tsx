@@ -3,7 +3,7 @@ import {Alert, Button, Col, Form, Spinner} from "react-bootstrap";
 import {addTime} from "./api";
 import {Autocomplete} from "./Autocomplete";
 
-type propType = {afterSubmit: ()=>void, names: string[]}
+type propType = {afterSubmit: ()=>void, beforeSubmit: ()=>Promise<boolean>, names: string[]}
 type stateType = {
     error: string, loading: boolean,
     name: string, time: number,
@@ -22,7 +22,7 @@ export class AddTime extends React.Component<propType, stateType> {
         }
     }
 
-    submitTime = (event: React.SyntheticEvent) => {
+    submitTime = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         // Show loading icon
         this.setState({loading: true})
@@ -48,6 +48,13 @@ export class AddTime extends React.Component<propType, stateType> {
                 this.setState({loading: false})
                 return
             }
+        }
+
+        // Check if we are still logged in
+        if (!await this.props.beforeSubmit()) {
+            // At this point the login screen will be shown so we just need to unhide the loading icon
+            this.setState({loading: false})
+            return
         }
 
         // Send to backend
