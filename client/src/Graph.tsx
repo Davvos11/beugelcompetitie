@@ -48,7 +48,7 @@ export class Graph extends React.Component<propType, stateType> {
         return <div style={{height: "500px"}}>
             <ResponsiveLine
                 data={this.state.lines}
-                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                margin={{ top: 50, right: 20, bottom: 80, left: 50 }}
                 xScale={{
                     type: "time",
                     format: "%Y-%m-%d %H:%M",
@@ -76,10 +76,10 @@ export class Graph extends React.Component<propType, stateType> {
                 axisBottom={{
                     format: "%d %b",
                     tickValues: "every 7 days",
-                    // tickRotation: -90,
+                    tickRotation: -90,
                     legend: "Datum",
                     legendPosition: "middle",
-                    legendOffset: 40
+                    legendOffset: 65
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -91,11 +91,11 @@ export class Graph extends React.Component<propType, stateType> {
                 enableSlices="x"
                 legends={[
                     {
-                        anchor: "bottom-right",
-                        direction: "column",
+                        anchor: "top",
+                        direction: "row",
                         justify: false,
-                        translateX: 100,
-                        translateY: 0,
+                        translateX: 0,
+                        translateY: -40,
                         itemsSpacing: 0,
                         itemDirection: "left-to-right",
                         itemWidth: 80,

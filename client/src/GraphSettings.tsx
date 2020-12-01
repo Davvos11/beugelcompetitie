@@ -30,42 +30,54 @@ export class GraphSettings extends React.Component<propType, stateType> {
 
 
     render() {
-        return <Row>
-            <Col><ButtonGroup toggle>
-                    {this.props.modes.map((mode, i) => (
-                        <ToggleButton
-                            value={mode.value} key={i}
-                            checked={this.props.mode === mode.value}
-                            type="radio"
-                            onChange={(e) => this.props.onModeChange(e.currentTarget.value as modeValue)}
-                        >
-                            {mode.name}
-                        </ToggleButton>
-                    ))}
-                </ButtonGroup></Col>
-            <Col><InputGroup>
+        const colClassNames = "mb-2"
+
+        return <Row style={{justifyContent: "space-around"}} >
+            <Col xs="auto" md={8} xl={4} className={colClassNames}>
+                <div className="mx-xl-auto" style={{display: "table"}}>
+                    <ButtonGroup toggle>
+                        {this.props.modes.map((mode, i) => (
+                            <ToggleButton
+                                value={mode.value} key={i}
+                                checked={this.props.mode === mode.value}
+                                type="radio"
+                                onChange={(e) => this.props.onModeChange(e.currentTarget.value as modeValue)}
+                            >
+                                {mode.name}
+                            </ToggleButton>
+                        ))}
+                    </ButtonGroup>
+                </div>
+            </Col>
+            <Col xs="auto" md={4} xl={2} className={colClassNames}>
+                <div className="ml-auto mx-xl-auto" style={{display: "table"}}><Dropdown>
+                    <Dropdown.Toggle>Filter</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {this.props.names.map((value, index) => (
+                            <Form.Check type="checkbox" id={`name-check${index}`} label={value}
+                                        onChange={(event: ChangeEvent<HTMLInputElement>) => this.onNameCheck(event, value)}/>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown></div>
+            </Col>
+            <Col xs={12} sm={6} md={6} xl={3} className={colClassNames}>
+                <InputGroup>
                     <InputGroup.Prepend><InputGroup.Text>Van</InputGroup.Text></InputGroup.Prepend>
                     <FormControl type="date"
                                  onChange={(e)=> {
                                      this.setState({currentRange: {from: new Date(e.target.value), to: this.state.currentRange.to}})
                                  }}/>
-            </InputGroup></Col>
-            <Col><InputGroup>
-                <InputGroup.Prepend><InputGroup.Text>Tot</InputGroup.Text></InputGroup.Prepend>
-                <FormControl type="date"
-                             onChange={(e)=> {
-                                 this.setState({currentRange: {from: this.state.currentRange.from, to: new Date(e.target.value)}})
-                             }}/>
-            </InputGroup></Col>
-            <Col><Dropdown>
-                <Dropdown.Toggle>Filter</Dropdown.Toggle>
-                <Dropdown.Menu>
-                    {this.props.names.map((value, index) => (
-                        <Form.Check type="checkbox" id={`name-check${index}`} label={value}
-                                    onChange={(event: ChangeEvent<HTMLInputElement>) => this.onNameCheck(event, value)}/>
-                    ))}
-                </Dropdown.Menu>
-            </Dropdown></Col>
+              </InputGroup>
+            </Col>
+            <Col xs={12} sm={6} md={6} xl={3} className={colClassNames}>
+                <InputGroup>
+                    <InputGroup.Prepend><InputGroup.Text>Tot</InputGroup.Text></InputGroup.Prepend>
+                    <FormControl type="date"
+                                 onChange={(e)=> {
+                                     this.setState({currentRange: {from: this.state.currentRange.from, to: new Date(e.target.value)}})
+                                 }}/>
+                </InputGroup>
+            </Col>
         </Row>;
     }
 
