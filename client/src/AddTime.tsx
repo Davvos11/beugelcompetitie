@@ -122,9 +122,11 @@ export class AddTime extends React.Component<propType, stateType> {
 
     render() {
         if (this.state.loading) {
-            return <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-            </Spinner>
+            return <div style={{width: "100%", display: (this.state.loading ? "block" : "none")}}>
+                <Spinner animation="border" role="status" style={{margin: "100px auto", display: "block"}}>
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            </div>
         }
 
         return <Form onSubmit={this.submitTime}>

@@ -60,7 +60,7 @@ class App extends React.Component<propType, stateType> {
         const imageMask = "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.04) 90%, rgba(0,0,0,0))"
 
         return <Bootstrap.Container>
-            <Bootstrap.Jumbotron style={{position: "relative"}}>
+            <Bootstrap.Jumbotron style={{position: "relative", minHeight: "600px"}}>
                 <div style={{position: "absolute", width: "100%", padding: "0 2rem"}}>
                     <img src={process.env.PUBLIC_URL + '/grolsch.webp'} alt=""
                          style={{
@@ -79,8 +79,8 @@ class App extends React.Component<propType, stateType> {
                         </p>
                     </div>
 
-                    <div style={{width: "100%", display: (this.state.loading ? "initial" : "none")}}>
-                        <Spinner animation="border" role="status" style={{margin: "auto 100px"}}>
+                    <div style={{width: "100%", display: (this.state.loading ? "block" : "none")}}>
+                        <Spinner animation="border" role="status" style={{margin: "100px auto", display: "block"}}>
                             <span className="sr-only">Loading...</span>
                         </Spinner>
                     </div>

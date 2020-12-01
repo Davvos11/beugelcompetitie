@@ -27,8 +27,8 @@ export class PersonalList extends React.Component<propType, stateType> {
                 <Modal.Title>Tijden van {this.props.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div style={{width: "100%", display: (this.state.loading ? "initial" : "none")}}>
-                    <Spinner animation="border" role="status" style={{margin: "auto 100px"}}>
+                <div style={{width: "100%", display: (this.state.loading ? "block" : "none")}}>
+                    <Spinner animation="border" role="status" style={{margin: "100px auto", display: "block"}}>
                         <span className="sr-only">Loading...</span>
                     </Spinner>
                 </div>
