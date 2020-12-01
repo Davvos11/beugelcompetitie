@@ -129,14 +129,18 @@ export class AddTime extends React.Component<propType, stateType> {
 
         return <Form onSubmit={this.submitTime}>
             <Form.Row>
-                <Form.Group as={Col}>
-                    <Form.Label>Naam:</Form.Label>
-                    <Autocomplete items={this.props.names} placeholder="Naam" onChange={this.updateName}/>
-                </Form.Group>
-                <Form.Group as={Col}>
-                    <Form.Label>Tijd (in secondes):</Form.Label>
-                    <Form.Control type="number" min={0} placeholder="Tijd" step={0.001} onChange={this.updateTime}/>
-                </Form.Group>
+                <Col xs={12} sm={6}>
+                    <Form.Group>
+                        <Form.Label>Naam:</Form.Label>
+                        <Autocomplete items={this.props.names} placeholder="Naam" onChange={this.updateName}/>
+                    </Form.Group>
+                </Col>
+                <Col xs={12} sm={6}>
+                    <Form.Group>
+                        <Form.Label>Tijd (in seconden):</Form.Label>
+                        <Form.Control type="number" min={0} placeholder="Tijd" step={0.001} onChange={this.updateTime}/>
+                    </Form.Group>
+                </Col>
             </Form.Row>
 
             <Form.Group>

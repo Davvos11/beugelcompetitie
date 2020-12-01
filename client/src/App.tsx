@@ -32,7 +32,7 @@ class App extends React.Component<propType, stateType> {
         this.state = {
             data: [],
             names: [],
-            key: 'graph',
+            key: 'leaderboard',
             sortBy: "time", sortDesc: false,
             graphData: [],
             graphMode: "best",
@@ -46,9 +46,11 @@ class App extends React.Component<propType, stateType> {
     }
 
     render() {
+        const wordwrap = <span style={{width: "0px", display: "inline-block"}}> </span>
+
         return <Bootstrap.Container>
             <Bootstrap.Jumbotron>
-                <h1 className="display-4">Beugelcompetitie <b>Lit</b>terkerkstraat</h1>
+                <h1 className="display-4">Beugel{wordwrap}competitie <b>Lit</b>terkerk{wordwrap}straat</h1>
                 <p className="lead">Leaderboard voor de beugelcompetitie van de <b>Lit</b>terkerkstraat</p>
 
                 <Bootstrap.Tabs activeKey={this.state.key} onSelect={(k) => this.setTab(k as string)}>
