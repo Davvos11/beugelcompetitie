@@ -47,48 +47,65 @@ class App extends React.Component<propType, stateType> {
 
     render() {
         const wordwrap = <span style={{width: "0px", display: "inline-block"}}> </span>
+        const imageMask = "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.04) 90%, rgba(0,0,0,0))"
 
         return <Bootstrap.Container>
-            <Bootstrap.Jumbotron>
-                <h1 className="display-4">Beugel{wordwrap}competitie <b>Lit</b>terkerk{wordwrap}straat</h1>
-                <p className="lead">Leaderboard voor de beugelcompetitie van de <b>Lit</b>terkerkstraat</p>
+            <Bootstrap.Jumbotron style={{position: "relative"}}>
+                <div style={{position: "absolute", width: "100%", padding: "0 2rem"}}>
+                    <img src={process.env.PUBLIC_URL + '/grolsch.webp'} alt=""
+                         style={{
+                             marginLeft: "auto", display: "block",
+                             maskImage: imageMask, WebkitMaskImage: imageMask
+                         }}/>
+                </div>
 
-                <Bootstrap.Tabs activeKey={this.state.key} onSelect={(k) => this.setTab(k as string)}>
-                    <Bootstrap.Tab eventKey="add"
-                                   title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
-                        <AddTime names={this.state.names} afterSubmit={()=> {
-                            // Todo go back to previous tab
-                            // Show the leaderboard
-                            this.setTab('leaderboard')
-                            // Update this object
-                            this.componentDidMount()
-                        }}/>
-                    </Bootstrap.Tab>
-                    <Bootstrap.Tab eventKey="leaderboard"
-                                   title={<span><FontAwesomeIcon icon={faList}/> Leaderboard</span>}>
-                        <Leaderboard data={this.state.data} clickable={true}
-                                     sort={{
-                                         sortBy: this.state.sortBy, sortDesc: this.state.sortDesc,
-                                         onSortChange: (by, desc) => {this.setState({sortBy: by, sortDesc: desc})}
-                                     }}/>
-                    </Bootstrap.Tab>
-                    <Bootstrap.Tab eventKey="graph"
-                                   title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
-                        <GraphSettings
-                            modes={modes} mode={this.state.graphMode}
-                            onModeChange={(mode => this.setState({graphMode: mode}))}
-                            dateRange={this.state.graphDateRange}
-                            onDateChange={range => this.setState({graphDateRange: range})}
-                            names={this.state.names}
-                            onNameChange={names => this.setState({graphNames: Array.from(names)})}
-                        />
-                        <Graph
-                            data={this.state.graphData}
-                            mode={this.state.graphMode}
-                        />
-                    </Bootstrap.Tab>
-                </Bootstrap.Tabs>
+                <div style={{position: "relative", zIndex: 2}}>
+                    <div style={{background: "linear-gradient(135deg, rgba(233,236,239,1) 0%,  rgba(255,255,255,0) 100%)", display: "table"}}>
+                        <h1 className="display-4">
+                            Beugel{wordwrap}competitie <b>Lit</b>terkerk{wordwrap}straat
+                        </h1>
+                        <p className="lead">
+                            Leaderboard voor de beugelcompetitie van de <b>Lit</b>terkerkstraat
+                        </p>
+                    </div>
 
+                    <Bootstrap.Tabs activeKey={this.state.key} onSelect={(k) => this.setTab(k as string)}>
+                        <Bootstrap.Tab eventKey="add"
+                                       title={<span><FontAwesomeIcon icon={faPlus}/> Tijd toevoegen</span>}>
+                            <AddTime names={this.state.names} afterSubmit={()=> {
+                                // Todo go back to previous tab
+                                // Show the leaderboard
+                                this.setTab('leaderboard')
+                                // Update this object
+                                this.componentDidMount()
+                            }}/>
+                        </Bootstrap.Tab>
+                        <Bootstrap.Tab eventKey="leaderboard"
+                                       title={<span><FontAwesomeIcon icon={faList}/> Leaderboard</span>}>
+                            <Leaderboard data={this.state.data} clickable={true}
+                                         sort={{
+                                             sortBy: this.state.sortBy, sortDesc: this.state.sortDesc,
+                                             onSortChange: (by, desc) => {this.setState({sortBy: by, sortDesc: desc})}
+                                         }}/>
+                        </Bootstrap.Tab>
+                        <Bootstrap.Tab eventKey="graph"
+                                       title={<span><FontAwesomeIcon icon={faChartLine}/> Grafiek</span>}>
+                            <GraphSettings
+                                modes={modes} mode={this.state.graphMode}
+                                onModeChange={(mode => this.setState({graphMode: mode}))}
+                                dateRange={this.state.graphDateRange}
+                                onDateChange={range => this.setState({graphDateRange: range})}
+                                names={this.state.names}
+                                onNameChange={names => this.setState({graphNames: Array.from(names)})}
+                            />
+                            <Graph
+                                data={this.state.graphData}
+                                mode={this.state.graphMode}
+                            />
+                        </Bootstrap.Tab>
+                    </Bootstrap.Tabs>
+
+                </div>
             </Bootstrap.Jumbotron>
         </Bootstrap.Container>
     }
