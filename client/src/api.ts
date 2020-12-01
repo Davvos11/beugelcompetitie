@@ -3,7 +3,6 @@ import {dateRangeType} from "./GraphSettings";
 
 const LOGIN_URL = '/login'
 const LEADERBOARD_URL = '/leaderboard'
-const USER_COOKIE = 'user_sid'
 
 export type sortType = "name"|"time"|"timestamp"
 

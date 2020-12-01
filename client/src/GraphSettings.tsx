@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from "react";
-import {ButtonGroup, Col, Dropdown, Form, FormCheck, FormControl, InputGroup, Row, ToggleButton} from "react-bootstrap";
+import {ButtonGroup, Col, Dropdown, Form, FormControl, InputGroup, Row, ToggleButton} from "react-bootstrap";
 import {sortBy} from "./App";
 
 export type modeValue = "all" | "best"
@@ -25,7 +25,7 @@ export class GraphSettings extends React.Component<propType, stateType> {
         this.state = {
             currentMode: this.props.mode,
             currentRange: this.props.dateRange,
-            enabledNames: new Set(),
+            enabledNames: new Set(this.props.names),
             filterDropdown: false
         }
     }
@@ -57,7 +57,8 @@ export class GraphSettings extends React.Component<propType, stateType> {
                         <Dropdown.Toggle>Filter</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {this.props.names.map((value, index) => (
-                                <Form.Check type="checkbox" id={`name-check${index}`} label={value} defaultChecked={this.state.enabledNames.has(value)}
+                                <Form.Check type="checkbox" id={`name-check${index}`} key={index}
+                                            label={value} defaultChecked={this.state.enabledNames.has(value)}
                                             onChange={(event: ChangeEvent<HTMLInputElement>) => this.onNameCheck(event, value)}/>
                             ))}
                         </Dropdown.Menu>

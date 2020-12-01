@@ -2,7 +2,7 @@ import React from "react";
 import {dataType} from "./App";
 import { ResponsiveLine } from '@nivo/line'
 import dateformat from 'dateformat'
-import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
+import {modeValue} from "./GraphSettings";
 
 type propType = {
     data: dataType[],
@@ -27,7 +27,7 @@ export class Graph extends React.Component<propType, stateType> {
             names: [], enabledNames: [], lines: [], lowestTime: 0,
         }
     }
-    processData = (enableAllNames = true) => {
+    processData = () => {
         // Get list of names (to be used by autocomplete)
         let names = this.props.data.map((item: dataType) => item.name)
         // Remove duplicates
@@ -37,10 +37,6 @@ export class Graph extends React.Component<propType, stateType> {
         const {lines, lowestTime} = generateLines(this.props.data, this.props.mode)
 
         // Save in state
-        if (enableAllNames) {
-            this.setState({enabledNames: names})
-        }
-
         this.setState({names, lines, lowestTime})
     }
 
