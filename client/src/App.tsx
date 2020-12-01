@@ -142,8 +142,9 @@ class App extends React.Component<propType, stateType> {
         </Bootstrap.Container>
     }
 
-    setError = (error: string) => {
-        this.setState({error})
+    setError = (error: Error) => {
+        console.error(error)
+        this.setState({error: error.message})
     }
 
     updateLeaderboard = async () => {
@@ -154,7 +155,7 @@ class App extends React.Component<propType, stateType> {
             // Set leaderboard and names
             this.setState({data: r, names})
         } catch (e) {
-            this.setError(e.message)
+            this.setError(e)
         }
     }
 
@@ -179,7 +180,7 @@ class App extends React.Component<propType, stateType> {
                 this.setState({graphDateRange: {from: new Date(oldestTimestamp), to: new Date()}})
             }
         } catch (e) {
-            this.setError(e.message)
+            this.setError(e)
         }
     }
 
