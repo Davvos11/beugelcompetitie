@@ -18,7 +18,9 @@ export type sortBy = "name"|"time"|"timestamp"
 type propType = {}
 type stateType = {
     data: dataType[],
-    key: string, names: string[],
+    key: string,
+    previousKey: string,
+    names: string[],
     sortBy: sortBy, sortDesc: boolean,
     graphData: dataType[],
     graphMode: modeValue
@@ -38,6 +40,7 @@ class App extends React.Component<propType, stateType> {
             data: [],
             names: [],
             key: 'leaderboard',
+            previousKey: 'leaderboard',
             sortBy: "time", sortDesc: false,
             graphData: [],
             graphMode: "best",
@@ -50,7 +53,8 @@ class App extends React.Component<propType, stateType> {
     }
 
     setTab(key: string) {
-        this.setState({key})
+        const currentKey = this.state.key
+        this.setState({key, previousKey: currentKey})
     }
 
     loading(loading: boolean) {
@@ -103,9 +107,8 @@ class App extends React.Component<propType, stateType> {
 
                             <div style={{display: (this.state.loggedIn ? "initial" : "none")}}>
                                 <AddTime names={this.state.names} afterSubmit={()=> {
-                                    // Todo go back to previous tab
                                     // Show the leaderboard
-                                    this.setTab('leaderboard')
+                                    this.setTab(this.state.previousKey)
                                     // Update this object
                                     this.componentDidMount()
                                 }} beforeSubmit={this.checkLogin}/>
