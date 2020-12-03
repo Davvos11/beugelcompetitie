@@ -1,0 +1,8 @@
+@media only screen and (min-device-width: 576px) {
+    .pasapas {
+        width: 90vw;
+        height: 90vh;
+        max-width: none !important;
+        max-height: none !important;
+    }
+}

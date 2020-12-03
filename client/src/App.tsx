@@ -5,11 +5,12 @@ import {Leaderboard} from "./Leaderboard";
 import {AddTime} from "./AddTime";
 import {getAllTimes, getLeaderboard, isLoggedIn} from "./api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChartLine, faList, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faChartLine, faList, faPlay, faPlus, faVideo} from "@fortawesome/free-solid-svg-icons";
 import {Graph} from "./Graph";
 import {dateRangeType, GraphSettings, modeType, modeValue} from "./GraphSettings";
 import {Alert, Spinner} from "react-bootstrap";
 import {Login} from "./Login";
+import {Pasapas} from "./Pasapas";
 
 
 export type dataType = {name: string, timestamp: number, time: number}
@@ -136,6 +137,12 @@ class App extends React.Component<propType, stateType> {
                                 data={this.state.graphData}
                                 mode={this.state.graphMode}
                             />
+                        </Bootstrap.Tab>
+                        <Bootstrap.Tab eventKey="pasapas"
+                                       title={<span><FontAwesomeIcon icon={faPlay}/> Pasapas</span>}>
+                            {this.state.key === "pasapas" ?
+                                <Pasapas onClose={()=>this.setTab(this.state.previousKey)}/> :
+                                <span/>}
                         </Bootstrap.Tab>
                     </Bootstrap.Tabs>
                     </div>
